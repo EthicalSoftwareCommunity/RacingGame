@@ -15,7 +15,7 @@ func _input(event):
 			set_global_position(event.position - Vector2(48, 48) * _controller.scale.x);
 			if (event.position - _controller.position).length() > 80 * _controller.scale.x:
 				set_position((event.position - _controller.position).normalized() * 80 - Vector2(48, 48));
-			_world.direction = (event.position - _controller.position).normalized() * (get_global_position() + Vector2(48, 48) - _controller.position).length() / 80 * _world.acceleration;
+			_world.direction = (event.position - _controller.position).normalized() * (get_global_position() + Vector2(48, 48) - _controller.position).length() / 80;
 	elif event is InputEventScreenTouch and not event.is_pressed():
 		set_position(Vector2.ZERO - Vector2(48, 48));
 		_world.direction = Vector2.ZERO;

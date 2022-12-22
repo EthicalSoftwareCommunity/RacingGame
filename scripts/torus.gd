@@ -2,9 +2,9 @@ extends MeshInstance;
 
 var body = StaticBody.new();
 var collision = CollisionShape.new();
-export (Vector2) var size = Vector2(8, 16);
-export (int) var height = 8;
-export (int) var radius = 32;
+export (Vector2) var size = Vector2(64, 256);
+export (int) var height = 64;
+export (int) var radius = 256;
 
 func _ready():
 	add_child(body);
