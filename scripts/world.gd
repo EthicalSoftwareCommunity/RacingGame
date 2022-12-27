@@ -2,13 +2,13 @@ extends Spatial;
 
 var direction: Vector2;
 var _distance_maximum: float;
-export (float) var acceleration = 1024;
-export (float) var gravity = 980;
+export (float) var acceleration = 2048;
+export (float) var gravity = 9.8;
 
 func _ready():
-	gravity *= -100;
+	gravity *= -$ball.mass * 10;
 	_distance_maximum = pow($torus.height, 2);
-	$ball.translation = Vector3(0, 0, $torus.radius / 2);
+	$ball.translation = Vector3(0, -$torus.radius + 1, 0);
 
 func _physics_process(delta):
 	var _gravity: Vector3;
@@ -20,8 +20,16 @@ func _physics_process(delta):
 			_distance = $ball/ray.get_collision_point().distance_squared_to($ball.translation);
 			_gravity = $ball/ray.get_collision_normal();
 	_gravity *= gravity * delta;
-	ball_move(Vector3(direction.x, 0, direction.y) * delta + _gravity);
-	$camera.translation = $ball.translation - Vector3(0, 0, -4);
+	$ball.engine_force = direction.y * acceleration * delta;
+	$ball.steering = -direction.x / 2;
+	$ball.add_central_force(_gravity);
+	$camera.translation -= ($camera.translation - ($ball.to_global(Vector3(0, 1, 2)))) * delta * 16;
+	$camera.rotation -= _get_camera_rotation($camera, $ball) * delta * 6;
+	$camera.fov = 70 + $ball.linear_velocity.length() * 2;
 
-func ball_move(_vector):
-	$ball.add_central_force(_vector);
+func _get_camera_rotation(_camera, _target) -> Vector3:
+	var _camera_rotation = _camera.rotation - _target.rotation;
+	for _axis in range(3):
+		if abs(_camera_rotation[_axis]) >= PI:
+			_camera_rotation[_axis] = -sign(_camera_rotation[_axis]) * fmod((2 * PI - abs(_camera_rotation[_axis])), PI);
+	return _camera_rotation;
