@@ -5,7 +5,7 @@ var collision = CollisionShape.new();
 #Vector2 type variable is used for the calculation.
 #x — latitude curve modifier, must be a multiple of 2
 #y — longitude curve modifier, must be between 0 and 1
-export (Vector2) var modifier = Vector2.ONE;# Value will be saved and visible in the property editor.
+export (Vector2) var modifier = Vector2.ONE;
 export (Vector2) var size = Vector2(1024, 8);
 export (float) var height = 0.325;
 export (float) var width = 0.01;
@@ -29,9 +29,11 @@ func _ready():
 func _road_segment(vector):
 	var _positions = [position(vector.x), position(vector.x + 1), position(vector.x + 2)];
 	var _angles = [
-		(_positions[1] - _positions[0]).normalized().rotated(-PI / 2).angle(),
-		(_positions[2] - _positions[1]).normalized().rotated(-PI / 2).angle()
+		-angle(vector.x),
+		-angle(vector.x + 1)
 	];
+	if _positions[0].y > 0.125:
+		pass;
 	var _vectors = PoolVector3Array();
 	var _vectors_positions = [
 		_positions[0] + Vector2(-width / 2 + vector.y / size.y * width, 0).rotated(_angles[0]),
@@ -46,6 +48,9 @@ func _road_segment(vector):
 	_vectors.append(_vectors[-3]);
 	_vectors.append(_torus.position(_vectors_positions[3]) + _torus.normal(_vectors_positions[3]) * height);
 	return _vectors;
+
+func angle(x):
+	return atan(cos(x / size.x * PI * 2 * modifier.x) * (modifier.x * modifier.y));
 
 func position(x):
 	var _angle = x / size.x * PI * 2 * modifier.x;

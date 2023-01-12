@@ -14,7 +14,8 @@ func body_entered(_body):
 			var _transform = _part.global_transform;
 			_part.mode = RigidBody.MODE_RIGID;
 			_part.set_collision_mask_bit(0, true);
-			get_parent().destructibles.append(_part);
+			get_parent().objects.append(_part);
 			remove_child(_part);
 			get_parent().add_child(_part);
 			_part.transform = _transform;
+		queue_free();

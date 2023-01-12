@@ -44,12 +44,10 @@ func position(vector):
 	return to_global(Vector3(radius * sin(PI * vector.x) * sin(2 * PI * vector.y), height * shape(PI * vector.x), radius * sin(PI * vector.x) * cos(2 * PI * vector.y)));
 
 func normal(vector):
-	var _points = [position(vector), position(Vector2(vector.x, vector.y - 0.0001)), position(Vector2(vector.x + 0.0001, vector.y))];
-	return (_points[0] - _points[1]).normalized().rotated((_points[0] - _points[2]).normalized(), PI / 2);
+	var _points = [position(vector), position(Vector2(vector.x, vector.y + 0.00001)), position(Vector2(vector.x + 0.00001, vector.y))];
+	return (_points[1] - _points[0]).cross(_points[2] - _points[0]).normalized();
 
 func local_transform(_object, vector):
-	var _transform = _object.transform;
 	var _normal = normal(vector);
-	_transform.basis.y = _normal;
-	_transform.basis.x = -_transform.basis.z.cross(_normal);
-	return _transform.basis.orthonormalized();
+	_object.look_at((position(Vector2(vector.x + 0.00001, vector.y)) - position(vector)).cross(_normal), _normal);
+	return _object.transform;
