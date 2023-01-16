@@ -8,7 +8,7 @@ func init():
 	visible = true;
 
 func body_entered(_body):
-	if _body is VehicleBody:
+	if _body is RigidBody and _body.mode == RigidBody.MODE_RIGID and get_parent().vehicles.has(_body):
 		disconnect("body_entered", self, "body_entered");
 		$warning.visible = false;
 		var _rock = $rock;

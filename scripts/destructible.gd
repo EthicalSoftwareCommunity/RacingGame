@@ -8,7 +8,7 @@ func init():
 	visible = true;
 
 func body_entered(_body):
-	if _body is RigidBody and _body.mode == RigidBody.MODE_RIGID:
+	if _body is RigidBody and not _body.mode == RigidBody.MODE_STATIC:
 		disconnect("body_entered", self, "body_entered");
 		for _part in [get_node("head"), get_node("torso"), get_node("legs")]:
 			var _transform = _part.global_transform;
